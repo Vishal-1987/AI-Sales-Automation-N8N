@@ -1,0 +1,171 @@
+{
+  "name": "2 User's lead query agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -576,
+        -256
+      ],
+      "id": "63890100-6f0b-408a-9acc-0295b63ee1e3",
+      "name": "When chat message received",
+      "webhookId": "47e79aa3-3724-49cd-9146-108752e970b9"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Handle the user's request.\n\nIf the user asks for lead information and has not provided an email, ask for their email address.\n\nOnce the email is provided, use the Lead Information tool to find the lead.\n\nFor questions about lead information, use ONLY the \"Updated information\" field and return only the relevant information requested by the user.\n\nIf the user's requested information is not contained in the \"Updated information\" field, check the appropriate Airtable field to retrieve that specific information.\n\nDo not return any unrelated information or other fields.\n\n{{ $json.chatInput }}\n",
+        "options": {
+          "systemMessage": "You are a Sales Lead Assistant.\n\nStart with a short greeting and ask how you can help.\n\nNOTE: \n\nWhen the user asks for lead information, check whether an email address has been provided. If not, ask the user for their email address.\n\nOnce the email is provided, use the Lead Information tool to find the matching lead in Airtable.\n\nIf the user's question is about lead information such as Lead Score, Lead Status, Lead Temperature, Qualification Status, Timeline, Estimated Budget, Service Required, Company Size, Missing Information, Recommended Action, or other qualification information, use ONLY the \"Updated information\" field to answer. Do not use or provide information from other Airtable fields for these questions.\n\nIf the user asks for information that is NOT contained in the \"Updated information\" field, use the appropriate Airtable field returned by the Lead Information tool to find and provide that specific information.\n\nAlways provide only the information relevant to the user's question. Do not provide unrelated fields or the complete lead record.\n\nUse only information returned by the Lead Information tool. Never guess or invent information.\n\nIf the requested information is not available, clearly tell the user that it is not available.\n\nKeep responses short, clear, and professional.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -336,
+        -256
+      ],
+      "id": "c02d92ad-17d2-4f5f-b0f7-8538374a0261",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -448,
+        -48
+      ],
+      "id": "04c629cc-01ef-421b-ac5c-36756af291d1",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "id"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -240,
+        -48
+      ],
+      "id": "af0d3cb3-98ef-453d-9ef0-a0e036dcf9ce",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apptsWbhcO8hJ7p15",
+          "mode": "list",
+          "cachedResultName": "AI Customer support",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRUEh1WudICkQL2",
+          "mode": "list",
+          "cachedResultName": "customer details",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15/tblRUEh1WudICkQL2"
+        },
+        "filterByFormula": "={Email} =\"{{ $fromAI('email', 'Enter the email address to search for') }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        -48
+      ],
+      "id": "18c12834-5b50-4ae9-84ae-7a6b6d348116",
+      "name": "lead information",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "xH4Psn1Y4Fn0Qenr",
+          "name": "Airtable account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead information": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "oFECzgdBT3argEob",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "1e3dd1d4-b82a-4ea7-937c-e338c4fc9c5a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b63143017ec3a5077024e7c0d37a594d7f024184d1bf6142a8daf647326d5f5"
+  },
+  "nodeGroups": [],
+  "id": "MdgIsVodwz9qfeLK",
+  "tags": []
+}

@@ -1,0 +1,947 @@
+{
+  "name": "1 FINAL AI Sales Automation System",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI Automation Consultation – Get in Touch",
+        "formDescription": "Tell us about your business and automation needs. We’ll review your requirements and recommend the right AI solution.\n",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "placeholder": "enter your name here",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "placeholder": "enter your email here",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "placeholder": "enter your number with country code.",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Name",
+              "placeholder": "fill your company name here",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Job Title/Role",
+              "placeholder": "enter your job department ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company size",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Self"
+                  },
+                  {
+                    "option": "0-10"
+                  },
+                  {
+                    "option": "10-20"
+                  },
+                  {
+                    "option": "20-30"
+                  },
+                  {
+                    "option": "30-40"
+                  },
+                  {
+                    "option": "40-50"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Service Required",
+              "fieldType": "textarea",
+              "placeholder": "fill the service that you require in points",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Estimated budget",
+              "fieldType": "number",
+              "placeholder": "fill the amount with currency symbol."
+            },
+            {
+              "fieldLabel": "Timeline",
+              "placeholder": "When would you like to start?",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -4400,
+        -1936
+      ],
+      "id": "f75bfede-aed5-4342-8c00-193026fc65d0",
+      "name": "On form submission",
+      "webhookId": "998e351e-6600-44d8-a82f-afdac10e622b"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -2840,
+        -1704
+      ],
+      "id": "c0ce3924-c81e-47e0-a553-3dada7e0b426",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "Cold",
+                    "rightValue": "={{ $json.lead_temperature }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b48e544e-ec6b-4869-be12-5c13dd211a39"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": "={{ false }}"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a1cb14fd-0359-458c-81f4-af4918ca6c7a",
+                    "leftValue": "Hot",
+                    "rightValue": "={{ $json.lead_temperature }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e7c6d8e0-ab9d-4760-a58d-74e57f9aa2cd",
+                    "leftValue": "Warm",
+                    "rightValue": "={{ $json.lead_temperature }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2336,
+        -1952
+      ],
+      "id": "9d07c999-5e24-4d77-8c2a-96388714245e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apptsWbhcO8hJ7p15",
+          "mode": "list",
+          "cachedResultName": "AI Customer support",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRUEh1WudICkQL2",
+          "mode": "list",
+          "cachedResultName": "customer details",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15/tblRUEh1WudICkQL2"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estimated budget": "={{ $json.estimated_budget }}",
+            "Name": "={{ $json.full_name }}",
+            "Email": "={{ $json.email }}",
+            "Phone number": "={{ $json.phone }}",
+            "Company name": "={{ $json.company_name }}",
+            "Job title/role": "={{ $json.job_title }}",
+            "company size": "={{ $json.company_size }}",
+            "Service required": "={{ $json.service_required }}",
+            "Timeline": "={{ $json.timeline }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Job title/role",
+              "displayName": "Job title/role",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company size",
+              "displayName": "company size",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service required",
+              "displayName": "Service required",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estimated budget",
+              "displayName": "Estimated budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Updated information",
+              "displayName": "Updated information",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -3136,
+        -1936
+      ],
+      "id": "74da298a-97c8-4bd7-868c-6aff14d3bdf3",
+      "name": "customer details",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "xH4Psn1Y4Fn0Qenr",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get form data\nconst data = $json;\n\n// Clean text safely\nconst cleanText = (value) => {\n  if (value === undefined || value === null) return '';\n  return String(value).trim().replace(/\\s+/g, ' ');\n};\n\n// Clean email\nconst email = cleanText(data['Email Address']).toLowerCase();\n\n// Clean phone number\nlet phone = cleanText(data['Phone Number']);\n\n// Remove spaces, brackets, hyphens, dots, etc.\nphone = phone.replace(/[^\\d+]/g, '');\n\n// Make Indian numbers consistent\nif (phone.startsWith('0')) {\n  phone = '+91' + phone.substring(1);\n} else if (phone.startsWith('91') && !phone.startsWith('+91')) {\n  phone = '+' + phone;\n} else if (/^\\d{10}$/.test(phone)) {\n  phone = '+91' + phone;\n}\n\n// Clean other fields\nconst fullName = cleanText(data['Full Name']);\nconst companyName = cleanText(data['Company Name']);\nconst jobTitle = cleanText(data['Job Title/Role']);\nconst companySize = cleanText(data['Company size']);\nconst serviceRequired = cleanText(data['Service Required']);\nconst timeline = cleanText(data['Timeline']);\n\n// Convert budget to number\nlet budget = data['Estimated budget'];\n\nif (budget === undefined || budget === null || budget === '') {\n  budget = 0;\n} else {\n  budget = Number(String(budget).replace(/[^\\d.]/g, ''));\n}\n\nif (isNaN(budget)) {\n  budget = 0;\n}\n\n// Return cleaned data\nreturn {\n  json: {\n    full_name: fullName,\n    email: email,\n    phone: phone,\n    company_name: companyName,\n    job_title: jobTitle,\n    company_size: companySize,\n    service_required: serviceRequired,\n    estimated_budget: budget,\n    timeline: timeline,\n    submitted_at: data['submittedAt'] || new Date().toISOString()\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4144,
+        -1936
+      ],
+      "id": "5e042f34-ed96-455a-ba71-9a0cfaea0d41",
+      "name": "cleaning data"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -2104,
+        -1704
+      ],
+      "id": "cda3a7dd-eeb8-4a23-8635-920dda36b058",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\"\n    },\n    \"body\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"subject\",\n    \"body\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1936,
+        -1696
+      ],
+      "id": "04446844-8015-48be-ad6b-14ff40aaccdb",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a personalized B2B sales email for this lead using the lead data below.\n\nLead Data:\n{{ JSON.stringify($json) }}\n\nImportant lead details:\n\nName:\n{{ $json.full_name }}\n\nJob Role:\n{{ $json.job_title }}\n\nCompany:\n{{ $json.company_name }}\n\nService Required:\n{{ $json.service_required }}\n\nBudget:\n{{ $json.estimated_budget }}\n\nTimeline:\n{{ $json.timeline }}\n\nLead Score:\n{{ $json.lead_score }}\n\nTemperature:\n{{ $json.lead_temperature }}\n\nQualification:\n{{ $json.qualification }}\n\nReason:\n{{ $json.reason }}\n\nMissing Information:\n{{ JSON.stringify($json.missing_information) }}\n\nRecommended Action:\n{{ $json.recommended_action }}\n\nUse the lead data and system instructions to decide the appropriate email approach.\n\nMake the email feel personally written for this specific lead. Address their main requirement and naturally guide them toward the recommended next step.\n\nReturn only the requested Subject and Body format.\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert B2B sales email writer.\n\nYour task is to write a short, personalized sales email based ONLY on the lead data provided by the user.\n\nRules:\n\n* Personalize the email using the lead's name, job role, company, service interest, budget, timeline, and relevant qualification context.\n* Use the lead score, temperature, qualification, reason, missing information, and recommended action internally to determine the appropriate email approach.\n* NEVER mention internal fields such as lead score, lead temperature, qualification, or AI analysis.\n* NEVER invent facts, needs, company information, or previous conversations that are not present in the lead data.\n* Address the lead's main requirement or business need naturally.\n* If the lead has a low, zero, or unknown budget, do not pressure them to purchase. Focus on understanding their requirements and suggesting a suitable next step.\n* If the timeline indicates immediate or urgent intent, make the CTA more direct while remaining professional and low-pressure.\n* If important information is missing, use the email to naturally ask for only the most relevant missing information.\n* Do not repeat all the lead information in the email.\n* Keep the email conversational, natural, concise, and professionally written.\n* Avoid generic phrases such as \"I hope this email finds you well.\"\n* Do not use excessive marketing language, hype, or unnecessary adjectives.\n* Keep the email between 80 and 120 words.\n* Include exactly one clear, low-pressure call to action.\n* Do not use emojis.\n* Do not add a signature unless a sender name is provided in the lead data.\n\nOutput ONLY in this format:\n\nSubject: [email subject]\n\nBody:\n[email body]\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2112,
+        -1936
+      ],
+      "id": "b8ab92f6-c2d2-4327-b3a3-67a9d9b50549",
+      "name": "AI Email Generator"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "apptsWbhcO8hJ7p15",
+          "mode": "list",
+          "cachedResultName": "AI Customer support",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRUEh1WudICkQL2",
+          "mode": "list",
+          "cachedResultName": "customer details",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15/tblRUEh1WudICkQL2"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estimated budget": "={{ $('customer details').item.json.fields['Estimated budget'] }}",
+            "Name": "={{ $('customer details').item.json.fields.Name }}",
+            "Email": "={{ $('customer details').item.json.fields.Email }}",
+            "Phone number": "={{ $('customer details').item.json.fields['Phone number'] }}",
+            "Company name": "={{ $('customer details').item.json.fields['Company name'] }}",
+            "Job title/role": "={{ $('customer details').item.json.fields['Job title/role'] }}",
+            "company size": "={{ $('customer details').item.json.fields['company size'] }}",
+            "Service required": "={{ $('customer details').item.json.fields['Service required'] }}",
+            "Updated information": "=Lead Score: {{ $('Switch').item.json.lead_score }}\n\nLead Temperature:  {{ $('Switch').item.json.lead_temperature }}\n\nQualification Status: {{ $('Switch').item.json.qualification }}\n\nMissing Information: {{ $('Switch').item.json.missing_information }}\n\nRecommended Action: {{ $('Switch').item.json.recommended_action }}",
+            "id": "={{ $('customer details').item.json.id }}",
+            "Timeline": "={{ $('On form submission').item.json.Timeline }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone number",
+              "displayName": "Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Job title/role",
+              "displayName": "Job title/role",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company size",
+              "displayName": "company size",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Service required",
+              "displayName": "Service required",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Estimated budget",
+              "displayName": "Estimated budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Updated information",
+              "displayName": "Updated information",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -1536,
+        -1936
+      ],
+      "id": "420b58d1-e0ac-400f-87c7-5bbad7a1d360",
+      "name": "update details",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "xH4Psn1Y4Fn0Qenr",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('customer details').item.json.fields.Email }}",
+        "subject": "={{ $json.output.properties.subject.type }}",
+        "emailType": "text",
+        "message": "=Lead Score: {{ $('Lead Data organise').item.json.lead_score }}\n\nMessage: {{ $json.output.properties.body.type }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1760,
+        -1936
+      ],
+      "id": "241eb191-4d18-4130-9540-154d6a5bf4a2",
+      "name": "Send message",
+      "webhookId": "c7c4392a-ed2c-4058-970d-e58b90903c9d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pWhNVjIS5Xo6M8GZ",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following lead and qualify it according to your instructions.\n\nLead Information:\n\nName: {{ $json.fields.Name }}\nEmail: {{ $json.fields.Email }}\nPhone: {{ $json.fields['Phone number'] }}\nCompany: {{ $json.fields['Company name'] }}\nCompany Size: {{ $json.fields['company size'] }}\nJob Role: {{ $json.fields['Job title/role'] }}\nService Requirement: {{ $json.fields['Service required'] }}\nBudget: {{ $json.fields['Estimated budget'] }}\nTimeline: {{ $json.fields.Timeline }}\n\nEvaluate all available lead information and determine:\n\n1. Lead score from 0–100\n2. Lead temperature: Hot, Warm, or Cold\n3. Qualification level\n4. Reason for the score\n5. Missing information\n6. Recommended sales action\n\nReturn ONLY the required JSON object.\n",
+        "options": {
+          "systemMessage": "You are an AI Sales Lead Qualification Specialist.\n\nYour job is to analyze incoming lead information and determine how valuable and sales-ready the lead is.\n\nEvaluate the lead ONLY from the information provided. Do not invent, assume, or infer facts that are not supported by the lead data.\n\nConsider these factors:\n\n1. Intent — How clearly does the lead express interest in the required service?\n2. Budget — Does the lead have a suitable or realistic budget?\n3. Timeline — How soon does the lead want to start or purchase, if provided?\n4. Service Requirement — How specific and relevant is the requested service?\n5. Business/Use Case — Is there a clear business or practical use case?\n6. Company Size — Consider the company size when relevant to the potential value of the lead.\n7. Decision-Making Ability — If the job role indicates decision-making or purchasing authority, consider it positively. If this information is unavailable, do not make assumptions.\n8. Overall Buying Potential — Estimate the likelihood that the lead can become a customer based on the available information.\n\nAssign a lead score from 0 to 100:\n\n* 80–100 = Hot\n* 50–79 = Warm\n* 0–49 = Cold\n\nScoring guidelines:\n\n* Hot leads have strong buying intent, a clear service requirement, suitable budget, and/or an immediate or near-term timeline.\n* Warm leads show genuine potential but have some missing information, lower urgency, uncertain budget, or a longer timeline.\n* Cold leads have weak or unclear intent, little relevant information, no clear requirement, no apparent buying intent, or very low purchasing potential.\n\nImportant rules:\n\n* Do not judge whether a lead is genuine or fake based on the person's name, company name, email provider, phone number, or other superficial information.\n* Do not assume a Gmail, Yahoo, Outlook, or other personal email address means the lead is low quality.\n* Do not assume that a company name is fake or legitimate based only on its wording.\n* Do not treat missing information as negative information.\n* If important information is missing, list it in \"missing_information\".\n* If a budget is 0, consider it a negative factor, but do not automatically assume the lead has no buying intent unless the lead explicitly indicates this.\n* If timeline information is unavailable, do not invent a timeline.\n* Base the score on the overall lead information rather than a single field.\n* Provide a short, factual explanation for the score.\n* Recommend the most appropriate next sales action based on the lead's temperature and available information.\n\nReturn ONLY valid JSON. Do not include markdown, explanations outside the JSON, or code fences.\n\nUse exactly this JSON structure:\n\n{\n\"lead_score\": 0,\n\"lead_temperature\": \"Hot\",\n\"qualification\": \"Highly Qualified\",\n\"reason\": \"Short explanation of why this score was assigned.\",\n\"missing_information\": [],\n\"recommended_action\": \"Recommended next step for the sales team.\"\n}\n\nThe \"lead_temperature\" must be exactly one of:\n\"Hot\", \"Warm\", \"Cold\"\n\nThe \"qualification\" must be exactly one of:\n\"Highly Qualified\", \"Qualified\", \"Partially Qualified\", \"Unqualified\"\n\nThe \"lead_score\" must be an integer between 0 and 100.\n\nThe \"missing_information\" must be an array of strings.\n\nDo not add any additional JSON fields.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2912,
+        -1936
+      ],
+      "id": "187bc9d2-89e6-4990-8871-9dbb9ffe00ad",
+      "name": "AI Lead Info Generation"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the AI output\nconst aiOutput = $json.output;\n\n// Remove markdown code fences if the AI adds them\nconst cleanedOutput = String(aiOutput)\n  .replace(/```json\\s*/gi, '')\n  .replace(/```\\s*/g, '')\n  .trim();\n\n// Parse AI JSON\nlet result;\n\ntry {\n  result = JSON.parse(cleanedOutput);\n} catch (error) {\n  throw new Error(\n    'AI output is not valid JSON. Raw output: ' + aiOutput\n  );\n}\n\n// Get original cleaned lead data\nconst lead = $('cleaning data').first().json;\n\n// Return complete lead + AI qualification data\nreturn [\n  {\n    json: {\n      \n      // ===== LEAD DETAILS =====\n      full_name: lead.full_name || '',\n      email: lead.email || '',\n      phone: lead.phone || '',\n      company_name: lead.company_name || '',\n      job_title: lead.job_title || '',\n      company_size: lead.company_size || '',\n      service_required: lead.service_required || '',\n      estimated_budget: lead.estimated_budget || 0,\n      timeline: lead.timeline || '',\n      submitted_at: lead.submitted_at || '',\n\n      // ===== AI QUALIFICATION =====\n      lead_score: Number(result.lead_score) || 0,\n      lead_temperature: result.lead_temperature || '',\n      qualification: result.qualification || '',\n      reason: result.reason || '',\n      missing_information: result.missing_information || '',\n      recommended_action: result.recommended_action || ''\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2560,
+        -1936
+      ],
+      "id": "cec33c4c-a94e-4b27-9fc6-ea1bc3e62dca",
+      "name": "Lead Data organise"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "apptsWbhcO8hJ7p15",
+          "mode": "list",
+          "cachedResultName": "AI Customer support",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblRUEh1WudICkQL2",
+          "mode": "list",
+          "cachedResultName": "customer details",
+          "cachedResultUrl": "https://airtable.com/apptsWbhcO8hJ7p15/tblRUEh1WudICkQL2"
+        },
+        "filterByFormula": "=AND(   {Email} = \"{{$json.email}}\",   {Phone number} = \"{{$json.phone}}\" )",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -3920,
+        -1936
+      ],
+      "id": "7724f61d-3ba1-47d7-b9e5-1c26ac5c3720",
+      "name": "Search records",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "xH4Psn1Y4Fn0Qenr",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0720c5e9-13bd-4461-a7f2-9f990e2a3e10",
+              "leftValue": "={{ $json.isDuplicate }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3472,
+        -1936
+      ],
+      "id": "dbf41ac1-4240-41ff-85fb-f1ed624f8a24",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get Airtable search result\nconst airtableResult = $input.first().json;\n\n// Get original cleaned lead data\nconst lead = $('cleaning data').first().json;\n\n// If Airtable returned a record ID, a duplicate exists\nconst isDuplicate = !!airtableResult.id;\n\nreturn [\n  {\n    json: {\n      ...lead,\n      isDuplicate: isDuplicate\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3680,
+        -1936
+      ],
+      "id": "e836422a-2c97-4d25-81fe-71baa889f152",
+      "name": "checking duplicate"
+    },
+    {
+      "parameters": {
+        "content": "## DUPLICATE DATA CHECKING PROCESS\n",
+        "height": 240,
+        "width": 672
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3952,
+        -2016
+      ],
+      "typeVersion": 1,
+      "id": "99a7bc25-2872-462b-8758-1a6f55d93f12",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "cleaning data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Lead Info Generation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Email Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Email Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Email Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "customer details": {
+      "main": [
+        [
+          {
+            "node": "AI Lead Info Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cleaning data": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Email Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Email Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Email Generator": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message": {
+      "main": [
+        [
+          {
+            "node": "update details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Lead Info Generation": {
+      "main": [
+        [
+          {
+            "node": "Lead Data organise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Data organise": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "checking duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checking duplicate": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "customer details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "oFECzgdBT3argEob",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "3b5568fa-de72-4c57-b685-113dd57b8896",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9b63143017ec3a5077024e7c0d37a594d7f024184d1bf6142a8daf647326d5f5"
+  },
+  "nodeGroups": [],
+  "id": "CJ3Oa960Wm17e8Gi",
+  "tags": []
+}
