@@ -29,35 +29,40 @@ The objective of this project is to automate the sales lead management process a
 
 Lead flow:
 
-Form Submission → Data Cleaning & Validation → Duplicate Check → AI Lead Qualification → Lead Routing → Personalized Email → CRM Update
+<img width="1124" height="224" alt="image" src="https://github.com/user-attachments/assets/16f5d038-5297-4748-ae80-be229454679a" />
+
 
 ### 2. User Lead Query Agent
 
-This AI Agent allows users to query stored lead information using natural language.
+<img width="660" height="381" alt="image" src="https://github.com/user-attachments/assets/595a4c04-8b67-4a06-b1d4-cea3b2d4048d" />
+
 
 ### 3. Error Handling Workflow
 
-This workflow captures workflow errors, stores error information, and sends notifications.
+<img width="632" height="280" alt="image" src="https://github.com/user-attachments/assets/7111f87e-506c-4734-a62f-00b318a75fb6" />
+
 
 ## Technologies Used
 
 - n8n
 - AI/LLM
 - Airtable
-- Gmail
+- Gmail node
 - code node
-- Forms Trigger
+- Switch node
+- if node
+- Form Trigger
 - APIs
 - JSON
 - n8n Cloud
 
 ## Architecture
 
-The complete architecture diagram is available in the `architecture` folder.
+The complete architecture diagram is available in the `Architecture Diagram` foile.
 
 ## Technical Documentation
 
-Detailed setup and workflow information is available in the `documentation` folder.
+Detailed setup and workflow information is available in the `Technical Documentation` file.
 
 ## Workflow Files
 
