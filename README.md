@@ -49,7 +49,7 @@ The objective of this project is to automate the sales lead management process a
 - Gmail node
 - code node
 - Switch node
-- wait
+- wait node
 - if node
 - Form Trigger
 - APIs
