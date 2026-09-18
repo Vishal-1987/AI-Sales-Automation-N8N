@@ -434,7 +434,7 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -2336,
+        -2304,
         -1952
       ],
       "id": "04446844-8015-48be-ad6b-14ff40aaccdb",
@@ -599,7 +599,10 @@
       "name": "checking duplicate"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "amount": 1,
+        "unit": "days"
+      },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
@@ -1327,7 +1330,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "e0d47fae-f247-401b-9b50-0986423a2fb6",
+  "versionId": "4fc91394-2ba2-4990-85e2-1da29a1c1d5f",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9b63143017ec3a5077024e7c0d37a594d7f024184d1bf6142a8daf647326d5f5"
