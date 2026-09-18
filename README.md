@@ -25,7 +25,7 @@ The objective of this project is to automate the sales lead management process a
 
 ## Workflows
 
-### 1. AI Sales Automation System
+### 1. AI Sales Automation System- leads,qualification and follow up
 
 <img width="1152" height="308" alt="image" src="https://github.com/user-attachments/assets/1fb993f9-7dba-481d-a0b2-4fc20b929a90" />
 
